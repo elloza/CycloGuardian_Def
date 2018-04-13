@@ -93,7 +93,6 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 // TODO: Implement successful signup logic here
-                System.out.println("Y AQUI");
                 Intent intent = new Intent(this, MainActivity.class);
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
@@ -108,8 +107,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-        System.out.println("Y AQUI 2");
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
         _loginButton.setEnabled(true);
         finish();
     }
