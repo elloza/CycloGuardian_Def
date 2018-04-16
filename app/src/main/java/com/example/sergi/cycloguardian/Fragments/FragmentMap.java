@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.sergi.cycloguardian.Events.LocationEvent;
 import com.example.sergi.cycloguardian.Events.ThersholdEvent;
+import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,10 +37,12 @@ import de.greenrobot.event.EventBus;
 public class FragmentMap extends Fragment implements OnMapReadyCallback{
 
     GoogleMap mGoogleMap;
+    MarkerOptions options;
     MapView mMapView;
     SupportMapFragment mapFragment;
     View mView;
     ArrayList<LatLng> myLocations = null;
+    MyApplication myApplication;
 
     public FragmentMap() {
         // Required empty public constructor
@@ -48,6 +53,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this); //Registro al bus de evnetos
+        myApplication = ((MyApplication)getActivity().getApplication());
         myLocations = new ArrayList<LatLng>();
     }
 
@@ -64,6 +70,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
             ft.replace(R.id.map, mapFragment).commit();
         }
 
+
+        MapsInitializer.initialize(getContext());
         mapFragment.getMapAsync(this);
 
         return mView;
@@ -73,45 +81,54 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
     // This method will be called when a ThersholEvent is posted
     public void onEvent(ThersholdEvent event){
         // Implementation when somo event was recive
-        //Toast.makeText(getActivity(), event.getDireccionUbicacion(), Toast.LENGTH_SHORT).show();
-       // myLocations.add(event.getLocalization());
+        myLocations.add(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getPosicion());
+        Log.i("MAP", String.valueOf(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getPosicion()));
+        addMarkerToMap();
     }
 
-    //This method will be called when a LocationEvent is poste
-    public void onEvent(LocationEvent event) {
-        Toast.makeText(getActivity(), (int) event.getUbicacion().latitude, Toast.LENGTH_LONG).show();
-    }
+   public void onEvent(LocationEvent locationEvent) {
+       addMarkerToMap();
+   }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        MarkerOptions options = new MarkerOptions();
-        MapsInitializer.initialize(getContext());
-        float minX = 0.0f;  //Para calcular aleatoriamente el color del marcador
-        float maxX = 360.0f;
-        float finalX;
-        Random rand = new Random();
+        options = new MarkerOptions();
+
 
         mGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        /*if(myLocations != null) {
-            //Añadimos los distintos marcadores que tengamos en el ArrayList
-            for (LatLng point : myLocations) {
-                finalX = rand.nextFloat() * (maxX - minX) + minX;
-                options.position(point);
-                options.title("someTitle");
-                options.snippet("someDesc");
-                options.icon(BitmapDescriptorFactory.defaultMarker(finalX));
-                googleMap.addMarker(options);
-            }
-            }*/
 
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(40.689247, -74.044502)).title("State of liberty"));
+        CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.968725, -5.663223))
+                    .zoom(8).bearing(0).tilt(45).build();
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-            CameraPosition Liberty = CameraPosition.builder().target(new LatLng(40.689247, -74.044502))
-                    .zoom(16).bearing(0).tilt(45).build();
-            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Liberty));
 
+    }
+
+    public void addMarkerToMap() {
+
+        float minX = 0.0f;  //Para calcular aleatoriamente el color del marcador
+        float maxX = 360.0f;
+        float finalX;
+        Random rand = new Random();
+        LatLng point = new LatLng((rand.nextDouble() * -180.0) + 90.0, (rand.nextDouble() * -360.0) + 180.0);
+        double latitude = point.latitude;
+        double longitude = point.longitude;
+        finalX = rand.nextFloat() * (maxX - minX) + minX;
+        Log.i("MAP", String.valueOf(point.latitude) + " " + String.valueOf(point.longitude) + " " + String.valueOf(finalX));
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
+                .anchor(0.5f, 0.5f)
+                .title("PRUEBA")
+                .icon(BitmapDescriptorFactory.defaultMarker(finalX)));
+
+        CameraPosition cameraPosition = CameraPosition.builder().target(point)
+                .zoom(16).bearing(0).tilt(45).build();
+        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        
     }
 
 

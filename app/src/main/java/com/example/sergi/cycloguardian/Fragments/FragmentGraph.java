@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.sergi.cycloguardian.Events.SensorEvent;
 import com.example.sergi.cycloguardian.Events.ThersholdEvent;
 import com.example.sergi.cycloguardian.Models.Session;
+import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 import com.example.sergi.cycloguardian.Utils.Constants;
 import com.github.mikephil.charting.charts.LineChart;
@@ -46,6 +47,7 @@ public class FragmentGraph extends Fragment {
     ArrayList<Entry> yAXESsen1 = new ArrayList<>();
     ArrayList<Entry> yAXESsen2 = new ArrayList<>();
     Queue<Float> miQueueSen1, miQueueSen2;
+    MyApplication myApplication;
 
     public FragmentGraph() {
         // Required empty public constructor
@@ -55,6 +57,7 @@ public class FragmentGraph extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this); //Registro al bus de evnetos
+        myApplication = ((MyApplication)getActivity().getApplication());
         miQueueSen1 = new Queue<Float>() {
             @Override
             public boolean add(Float aFloat) {
@@ -326,7 +329,7 @@ public class FragmentGraph extends Fragment {
        miQueueSen2.add(dateSen2);
 
        //Set the session queue
-        Session.getInstance().setSensorDatesQueue(miQueueSen1);
+        //myApplication.mySession.setSensorDatesQueue(miQueueSen1);
 
         //Set data from the graph
        setData(dateSen1, dateSen2);

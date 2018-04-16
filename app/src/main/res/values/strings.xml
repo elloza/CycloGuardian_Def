@@ -25,7 +25,7 @@
     <string name="location_updated">Location Updated: %1$s</string>
     <string name="remove_location_updates">Remove location updates</string>
     <string name="launch_activity">Launch activity</string>
-    <string name="text_chronometer">Time Session:</string>
+    <string name="text_chronometer">Session Time:</string>
     <string name="text_activityStart">Activity Start at:</string>
     <string name="text_activityStop">Activity Stop at:</string>
     <string name="text_activityElapsed">Time of Session:</string>

@@ -11,6 +11,7 @@ import com.example.sergi.cycloguardian.Adapter.IncidenceAdapter;
 import com.example.sergi.cycloguardian.Events.ThersholdEvent;
 import com.example.sergi.cycloguardian.Models.Incidence;
 import com.example.sergi.cycloguardian.Models.Session;
+import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class FragmentGaleryList extends Fragment {
     View mView;
     RecyclerView recyclerView;
     List<Incidence> incidenceList;
+    MyApplication myApplication;
 
     public FragmentGaleryList() {
         // Required empty public constructor
@@ -32,6 +34,7 @@ public class FragmentGaleryList extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this); //Registro al bus de evnetos
+        myApplication = ((MyApplication)getActivity().getApplication());
 
     }
 

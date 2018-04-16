@@ -1,35 +1,30 @@
 package com.example.sergi.cycloguardian.Models;
 
-import android.app.Application;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Queue;
-
 
 
 /**
  * Created by sergi on 13/04/2018.
  */
 
-public class Session extends Application {
+public class Session {
     ArrayList<Incidence> incidenceArryList;
     Date sessionStart;
     Date sessionEnd;
     long timeElapsedSession;
     Queue<Float> sensorDatesQueue;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
 
     public Session() {
         this.incidenceArryList = new ArrayList<>();
-        this.sensorDatesQueue = null;
+        this.sensorDatesQueue = new LinkedList<>();
     }
 
     //Singleton of the class

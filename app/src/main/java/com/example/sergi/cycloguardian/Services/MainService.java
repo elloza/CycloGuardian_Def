@@ -21,6 +21,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
+import com.example.sergi.cycloguardian.Events.LocationEvent;
 import com.example.sergi.cycloguardian.Events.SensorEvent;
 import com.example.sergi.cycloguardian.Events.ThersholdEvent;
 import com.example.sergi.cycloguardian.Files.Photo;
@@ -28,6 +29,7 @@ import com.example.sergi.cycloguardian.Messages.IncomingCameraMessage;
 import com.example.sergi.cycloguardian.Messages.OutcomingCameraMessagePhoto;
 import com.example.sergi.cycloguardian.Messages.OutcomingCameraMessageRequest;
 import com.example.sergi.cycloguardian.Models.Incidence;
+import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.Models.Session;
 import com.example.sergi.cycloguardian.Utils.Constants;
 import com.example.sergi.cycloguardian.Utils.Parser;
@@ -54,12 +56,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Queue;
 import java.util.Random;
 
 import de.greenrobot.event.EventBus;
@@ -133,10 +132,13 @@ public class MainService extends Service {
     /**
      * The current location.
      */
-    private Location mLocation;
+    public Location mLocation = null;
 
     //NetworkTask
     NetworkTask networkTask;
+
+    //Object myAplication
+    MyApplication myApplication;
 
 
     public MainService() {
@@ -145,6 +147,8 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        myApplication = ((MyApplication)this.getApplication());
 
         mLocationCallback = new LocationCallback() {
             @Override
@@ -156,8 +160,9 @@ public class MainService extends Service {
 
         createLocationRequest();
         getLastLocation();
-        randomDistanceGenerator();
+        //randomDistanceGenerator();
         //hacerFoto();
+        ramdomLocationGenerator();
 
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
@@ -355,24 +360,30 @@ public class MainService extends Service {
         }
     }
 
-    public String setLocation(Location loc) {
-        //Obtener la direccion de la calle a partir de la latitud y la longitud
-        if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
-            try {
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                List<Address> list = geocoder.getFromLocation(
-                        loc.getLatitude(), loc.getLongitude(), 1);
-                if (!list.isEmpty()) {
-                    Address DirCalle = list.get(0);
-                    //  mensaje2.setText("Mi direccion es: \n" + DirCalle.getAddressLine(0));
-                    return DirCalle.getAddressLine(0);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public void ramdomLocationGenerator() {
+        /*new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 20; i++) {
+                    //Notificación de un nuevo evento de datos
+                    LocationEvent locationEvent = new LocationEvent();
+                    locationEvent.setIndex(i);
+                    EventBus.getDefault().post(locationEvent);
 
-        return null;
+                    //check the date
+                    try {
+                        Thread.sleep(4000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }
+        }).start();*/
+
+        LocationEvent locationEvent = new LocationEvent();
+        EventBus.getDefault().post(locationEvent);
     }
 
     public void randomDistanceGenerator() {
@@ -387,11 +398,13 @@ public class MainService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 20; i++) {
                     float finalXS1;
                     float finalXS2;
                     finalXS1 = rand.nextFloat() * (maxX - minX) + minX;
                     finalXS2 = rand.nextFloat() * (maxX - minX) + minX;
+                    //Add to the queue
+                    myApplication.mySession.getSensorDatesQueue().add(finalXS1);
                     //Notificación de un nuevo evento de datos
                     SensorEvent sensorEvent = new SensorEvent();
                     sensorEvent.setSensor1(finalXS1);
@@ -404,9 +417,6 @@ public class MainService extends Service {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
-                    //checkQueue();
-                    Log.i("THREAD", String.valueOf(i) + String.valueOf(finalXS1));
                 }
 
 
@@ -521,6 +531,7 @@ public class MainService extends Service {
                     if(inMsgReply == null) {
                         //La acción de tomar foto ha fallado
                         photo = new Photo(null, null);
+                        photo = null;
                     }
 
                     //TODO SETEAR EL TOKEN EN EL MSG
@@ -616,45 +627,44 @@ public class MainService extends Service {
         @Override
         protected void onPostExecute(Photo photo) {
             int indexIncidence = 0;
-            if (photo.getUrl() != null) {
-                Log.i("AsyncTask", "onPostExecute: Completed.");
+            if (photo != null) {
+                if (photo.getUrl() != null) {
+                    Log.i("AsyncTask", "onPostExecute: Completed.");
 
-                //TODO create a new incidence
-                Incidence incidence = new Incidence();
-                Location location = null;
+                    //TODO create a new incidence
+                    Incidence incidence = new Incidence();
 
-                //TODO obtain location
-                onNewLocation(location);
-                if(location != null) {
-                    Log.i("LOC", String.valueOf(location.getLatitude()));
-                    incidence.setPosicion(new LatLng(location.getLatitude(), location.getLongitude()));
-                    String direction;
-                    direction = setLocation(location);
-                    if (direction != null) {
-                        incidence.setIncidenceDirection(direction);
+                    //TODO obtain location
+                    getLastLocation();
+                    if (mLocation != null) {
+                        Log.i("LOC", String.valueOf(mLocation.getLatitude()) + " " + String.valueOf(mLocation.getLongitude()));
+                        incidence.setPosicion(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
                     }
-                }
 
-                //Add the photo to the indidence and the date
-                incidence.setImage(photo);
-                incidence.setTimeIncidence(new Date());
+                    //Add the photo to the indidence and the date
+                    incidence.setImage(photo);
+                    incidence.setTimeIncidence(new Date());
 
 
-                //TODO añadir incicencia a la session
-                Session.getInstance().getIncidenceArryList().add(incidence);
+                    //TODO añadir incicencia a la session
+                    myApplication.mySession.getIncidenceArryList().add(incidence);
 
-                //Obtain the index of the 
-                for (int i = 0; i < Session.getInstance().getIncidenceArryList().size(); i++) {
-                    if(photo.getNamePhoto().equals(Session.getInstance().getIncidenceArryList().get(i).getImage().getNamePhoto())) {
-                        indexIncidence = i;  
+                    //Obtain the index of the
+                    for (int i = 0; i < myApplication.mySession.getIncidenceArryList().size(); i++) {
+                        if (photo.getNamePhoto().equals(myApplication.mySession.getIncidenceArryList().get(i).getImage().getNamePhoto())) {
+                            indexIncidence = i;
+                        }
                     }
+
+                    //Create the event and post to the eventbus
+                    thersholdEvent = new ThersholdEvent();
+                    thersholdEvent.setPosIncidence(indexIncidence);
+                    EventBus.getDefault().post(thersholdEvent);
+
+                } else {
+                    Log.i("AsyncTask", "onPostExecute: Something ocurred.");
+                    //textStatus.setText("No se ha podido realizar la foto");
                 }
-
-                //Create the event and post to the eventbus
-                thersholdEvent = new ThersholdEvent();
-                thersholdEvent.setPosIncidence(indexIncidence);
-                EventBus.getDefault().post(thersholdEvent);
-
             } else {
                 Log.i("AsyncTask", "onPostExecute: Something ocurred.");
                 //textStatus.setText("No se ha podido realizar la foto");

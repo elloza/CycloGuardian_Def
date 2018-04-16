@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.sergi.cycloguardian.Models.Session;
+import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 
 import java.text.SimpleDateFormat;
@@ -16,6 +17,7 @@ public class SummaryActivity extends AppCompatActivity {
     TextView textViewDateStart, textViewDateStop, textViewTimeElapsed, textViewIncidencesNumber,
             textViewAverageOvertaking;
     Queue<Float> summaryQueue;
+    MyApplication myApplication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,7 @@ public class SummaryActivity extends AppCompatActivity {
         String fechaIni, fechaFin;
         Float dateSum = 0.0f;
         Float distanceAverage = 0.0f;
+        myApplication = ((MyApplication)this.getApplication());
 
         //Instances of the xml
         textViewDateStart = (TextView) findViewById(R.id.textViewFechaIni);
@@ -36,11 +39,11 @@ public class SummaryActivity extends AppCompatActivity {
         //SimpleDateFormat for the Date
         String pattern = "EEE, d MMM yyyy  HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        fechaIni = simpleDateFormat.format(Session.getInstance().getSessionStart());
-        fechaFin = simpleDateFormat.format(Session.getInstance().getSessionEnd());
+        fechaIni = simpleDateFormat.format(myApplication.mySession.getSessionStart());
+        fechaFin = simpleDateFormat.format(myApplication.mySession.getSessionEnd());
 
         //Average of overtaking in the session
-        summaryQueue = Session.getInstance().getSensorDatesQueue();
+        summaryQueue = myApplication.mySession.getSensorDatesQueue();
         Float dateQueue;
         int numberOfDates = 0;
         if (summaryQueue != null) {
@@ -56,8 +59,8 @@ public class SummaryActivity extends AppCompatActivity {
         distanceAverage = dateSum / numberOfDates;
 
         //Convert miliseconds to hour:minute:seconds
-        hour = Session.getInstance().getTimeElapsedSession() / 3600000;
-        restHour = Session.getInstance().getTimeElapsedSession() % 3600000;
+        hour = myApplication.mySession.getTimeElapsedSession() / 3600000;
+        restHour = myApplication.mySession.getTimeElapsedSession() % 3600000;
 
         minute = restHour / 60000;
         restMinute = restHour % 60000;
@@ -69,7 +72,7 @@ public class SummaryActivity extends AppCompatActivity {
         textViewDateStart.append( "  " + fechaIni);
         textViewDateStop.append("  " + fechaFin);
         textViewTimeElapsed.append("  " + hour + ":" + minute + ":" + seconds);
-        textViewIncidencesNumber.append("  " + Session.getInstance().getIncidenceArryList().size());
+        textViewIncidencesNumber.append("  " + myApplication.mySession.getIncidenceArryList().size());
         textViewAverageOvertaking.append("  " + distanceAverage);
     }
 }

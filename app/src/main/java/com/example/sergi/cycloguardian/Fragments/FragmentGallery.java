@@ -29,6 +29,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.sergi.cycloguardian.Events.ThersholdEvent;
 import com.example.sergi.cycloguardian.Files.Photo;
 import com.example.sergi.cycloguardian.Models.Session;
+import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 import com.google.android.gms.maps.MapView;
 
@@ -46,6 +47,9 @@ public class FragmentGallery extends Fragment {
     TextView textViewLoc;
     ViewGroup cont;
 
+    //Object myAplication
+    MyApplication myApplication;
+
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -61,6 +65,7 @@ public class FragmentGallery extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this); //Registro al bus de evnetos
+        myApplication = ((MyApplication)getActivity().getApplication());
     }
 
     @Override
@@ -78,8 +83,8 @@ public class FragmentGallery extends Fragment {
 
     // This method will be called when a HelloWorldEvent is posted
     public void onEvent(ThersholdEvent event) {
-        //Toast.makeText(this.getActivity(), "YEMENITES", Toast.LENGTH_SHORT).show();
-        extractBitmap(Session.getInstance().getIncidenceArryList().get(event.getPosIncidence()).getImage());
+        Log.i("GALL", myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getImage().getNamePhoto());
+        extractBitmap(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getImage());
     }
 
 

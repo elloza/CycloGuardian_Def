@@ -20,6 +20,7 @@ import com.example.sergi.cycloguardian.Fragments.FragmentGaleryList;
 import com.example.sergi.cycloguardian.Fragments.FragmentGraph;
 import com.example.sergi.cycloguardian.Fragments.FragmentMap;
 import com.example.sergi.cycloguardian.Models.Session;
+import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 import com.example.sergi.cycloguardian.Services.MainService;
 
@@ -32,6 +33,7 @@ public class StartActivity extends AppCompatActivity {
     // A reference to the service used to get location updates.
     private MainService mService = null;
     Chronometer chronometerSession;
+    MyApplication myApplication;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -60,7 +62,7 @@ public class StartActivity extends AppCompatActivity {
         adapter.addFragment(new FragmentGaleryList(), getString(R.string.title_fragment_gallery));
         viewPager.setAdapter(adapter);
 
-
+        myApplication = ((MyApplication)this.getApplication());
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -86,7 +88,7 @@ public class StartActivity extends AppCompatActivity {
                 Context.BIND_AUTO_CREATE);*/
 
         //Set the time of session start
-        Session.getInstance().setSessionStart(new Date());
+        myApplication.mySession.setSessionStart(new Date());
 
         //Start the chronometrer
         chronometerSession = (Chronometer) findViewById(R.id.chronometerSession);
@@ -132,10 +134,10 @@ public class StartActivity extends AppCompatActivity {
         stopService(new Intent(this, MainService.class));
 
         //TODO detener timestamp y setearlo en la Session
-        Session.getInstance().setSessionEnd(new Date());
+        myApplication.mySession.setSessionEnd(new Date());
         elapsedMillis = SystemClock.elapsedRealtime() - chronometerSession.getBase();
         chronometerSession.stop();
-        Session.getInstance().setTimeElapsedSession(elapsedMillis);
+        myApplication.mySession.setTimeElapsedSession(elapsedMillis);
 
         //TODO volcar la sessión al disco
         //TODO programar un trabajo subir Session al servidor (jobs)
