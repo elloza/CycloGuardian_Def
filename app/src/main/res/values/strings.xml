@@ -18,4 +18,45 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="google_maps_api_key">AIzaSyBQVxEY1oOcWqyN2A4V0YqtWJpQR2KpFBY</string>
+    <string name="location_updated">Location Updated: %1$s</string>
+    <string name="remove_location_updates">Remove location updates</string>
+    <string name="launch_activity">Launch activity</string>
+    <string name="text_chronometer">Time Session:</string>
+    <string name="text_activityStart">Activity Start at:</string>
+    <string name="text_activityStop">Activity Stop at:</string>
+    <string name="text_activityElapsed">Time of Session:</string>
+    <string name="text_numberIncidences">Number of incidences:</string>
+    <string name="text_averageOvertaking">Average of overtaking:</string>
+    <string name="options_gallery">Show gallery</string>
+    <string name="optionsOneImage">Show last photo</string>
+    <string name="state">STATE</string>
+    <string name="service">SERVICE</string>
+    <string name="camera_name">Camera SJ5000+</string>
+    <string name="device">Device</string>
+    <string name="title_fragment_map">MAP</string>
+    <string name="title_fragment_image">IMAGE</string>
+    <string name="title_fragment_gallery">GALLERY</string>
+    <string name="title_fragment_graph">GRAPH</string>
+    <string name="footer_graph">Sensor Distance</string>
+    <string name="sensor1_footer">Data Sensor 1</string>
+    <string name="sensor2_footer">Data Sensor 2</string>
+    <string name="wifi_enabled">The WiFi is enabled</string>
+    <string name="start_wifi_fail">Imposible to start WiFi. Try it later</string>
+    <string name="gps_enabled">The GPS is enabled</string>
+    <string name="gps_enabled_success">GPS enabled</string>
+    <string name="gps_enable_fail">Imposible to enable GPS. Try it later</string>
+    <string name="bluetooth_enabled">The Bluetooth is enabled</string>
+    <string name="bluetooth_enabled_success">Bluetooth enabled</string>
+    <string name="bluetooh_enabled_fail">Imposible to enable Bluetooth. Try it later</string>
+    <string name="concet_wifi">Conected to</string>
+    <string name="conect_wifi_fail">Imposible to connect to</string>
+    <string name="try_later">. Try it now later</string>
+    <string name="wifi_camera_disconnect">Camera wifi disconnected. Firts you have to enable the camera wifi</string>
+    <string name="wifi_disabled">Red wifi desconectada. Firts you have to enable wifi</string>
+    <string name="thershold_line">1.5 m</string>
+
 </resources>

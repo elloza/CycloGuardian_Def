@@ -13,7 +13,7 @@ import java.util.Date;
  * Created by sergi on 13/04/2018.
  */
 
-class Utils {
+public class Util {
     static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting_locaction_updates";
 
     /**
@@ -21,7 +21,7 @@ class Utils {
      *
      * @param context The {@link Context}.
      */
-    static boolean requestingLocationUpdates(Context context) {
+    public static boolean requestingLocationUpdates(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(KEY_REQUESTING_LOCATION_UPDATES, false);
     }
@@ -30,7 +30,7 @@ class Utils {
      * Stores the location updates state in SharedPreferences.
      * @param requestingLocationUpdates The location updates state.
      */
-    static void setRequestingLocationUpdates(Context context, boolean requestingLocationUpdates) {
+    public static void setRequestingLocationUpdates(Context context, boolean requestingLocationUpdates) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(KEY_REQUESTING_LOCATION_UPDATES, requestingLocationUpdates)
@@ -41,12 +41,12 @@ class Utils {
      * Returns the {@code location} object as a human readable string.
      * @param location  The {@link Location}.
      */
-    static String getLocationText(Location location) {
+    public static String getLocationText(Location location) {
         return location == null ? "Unknown location" :
                 "(" + location.getLatitude() + ", " + location.getLongitude() + ")";
     }
 
-    static String getLocationTitle(Context context) {
+    public static String getLocationTitle(Context context) {
         return context.getString(R.string.location_updated,
                 DateFormat.getDateTimeInstance().format(new Date()));
     }

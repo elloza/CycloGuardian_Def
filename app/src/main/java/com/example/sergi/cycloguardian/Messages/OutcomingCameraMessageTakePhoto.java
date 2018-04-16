@@ -17,7 +17,9 @@ public class OutcomingCameraMessageTakePhoto extends OutcomingCameraMessage {
         this.fetch_size = fetch_size;
     }
 
-    public String componerMensajeTakePhoto() {
+
+    @Override
+    public String componerMensajePhoto() {
         String cadena = "{\"msg_id\":" + msg_id + ",\"token\":" + token + ",\"param\":" + param + "}";
         return cadena;
     }

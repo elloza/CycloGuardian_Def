@@ -10,7 +10,9 @@ public class OutcomingCameraMessageVideo extends OutcomingCameraMessage {
         this.msg_id = msg_id;
     }
 
-    public String componerMensajeVideo() {
+
+    @Override
+    public String componerMensajePhoto() {
         String cadena = "{\"msg_id\":" + msg_id + ",\"token\":" + token + "}";
         return cadena;
     }

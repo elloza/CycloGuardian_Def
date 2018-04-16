@@ -7,9 +7,17 @@ import android.graphics.Bitmap;
  */
 
 public class Photo {
-    String url;
-    String namePhoto;
-    Bitmap bitmap;
+    String url = null;
+    String namePhoto = null;
+    String rutaInterna = null;
+
+    public String getRutaInterna() {
+        return rutaInterna;
+    }
+
+    public void setRutaInterna(String rutaInterna) {
+        this.rutaInterna = rutaInterna;
+    }
 
     public String getUrl() {
         return url;
@@ -26,15 +34,6 @@ public class Photo {
     public void setNamePhoto(String namePhoto) {
         this.namePhoto = namePhoto;
     }
-
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap resource) {
-        this.bitmap = bitmap;
-    }
-
 
     public Photo (String url, String namePhoto) {
         this.url = url;

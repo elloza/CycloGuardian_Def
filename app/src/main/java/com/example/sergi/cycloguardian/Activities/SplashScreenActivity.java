@@ -1,11 +1,13 @@
-package com.example.sergi.cycloguardian;
+package com.example.sergi.cycloguardian.Activities;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
+import android.view.WindowManager;
 
+import com.example.sergi.cycloguardian.R;
 import com.example.sergi.cycloguardian.Utils.Constants;
 
 import java.util.Timer;
@@ -20,7 +22,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         // Set portrait orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Hide title bar
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getActionBar().hide();
 
         setContentView(R.layout.splash_background);
 

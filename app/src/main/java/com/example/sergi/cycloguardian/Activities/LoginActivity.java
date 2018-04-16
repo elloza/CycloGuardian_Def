@@ -1,4 +1,4 @@
-package com.example.sergi.cycloguardian;
+package com.example.sergi.cycloguardian.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.sergi.cycloguardian.R;
 
 
 public class LoginActivity extends AppCompatActivity {

@@ -12,18 +12,27 @@ import java.util.Date;
  * Created by sergi on 13/04/2018.
  */
 
-public class Incidencia {
+public class Incidence {
     LatLng posicion;
     Photo image;
     ArrayList<Double> datosSensor;
     Date timeIncidence;
+    String incidenceDirection = null;
 
     //Constructor of the class
-    public Incidencia() {
+    public Incidence() {
 
     }
 
     //Getters and setters
+    public String getIncidenceDirection() {
+        return incidenceDirection;
+    }
+
+    public void setIncidenceDirection(String incidenceDirection) {
+        this.incidenceDirection = incidenceDirection;
+    }
+
     public LatLng getPosicion() {
         return posicion;
     }

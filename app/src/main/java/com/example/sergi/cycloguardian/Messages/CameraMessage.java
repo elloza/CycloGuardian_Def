@@ -26,4 +26,5 @@ public abstract class CameraMessage {
         this.msg_id = msg_id;
     }
 
+
 }

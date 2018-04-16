@@ -1,12 +1,10 @@
-package com.example.sergi.cycloguardian;
+package com.example.sergi.cycloguardian.Activities;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.location.Location;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,25 +12,26 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.Chronometer;
 
-import com.example.sergi.cycloguardian.Fragments.FragmentGaleria;
-import com.example.sergi.cycloguardian.Fragments.FragmentGrafica;
+import com.example.sergi.cycloguardian.Fragments.FragmentGallery;
+import com.example.sergi.cycloguardian.Fragments.FragmentGaleryList;
+import com.example.sergi.cycloguardian.Fragments.FragmentGraph;
 import com.example.sergi.cycloguardian.Fragments.FragmentMap;
+import com.example.sergi.cycloguardian.Models.Session;
+import com.example.sergi.cycloguardian.R;
 import com.example.sergi.cycloguardian.Services.MainService;
-import com.example.sergi.cycloguardian.Utils.Util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import de.greenrobot.event.EventBus;
 
 public class StartActivity extends AppCompatActivity {
 
     // A reference to the service used to get location updates.
     private MainService mService = null;
+    Chronometer chronometerSession;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -55,13 +54,13 @@ public class StartActivity extends AppCompatActivity {
         //Iniciamos los fragments
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FragmentGrafica(), "GRÁFICO");
-        adapter.addFragment(new FragmentMap(), "MAPA");
-        adapter.addFragment(new FragmentGaleria(), "GALERIA");
+        adapter.addFragment(new FragmentGraph(), getString(R.string.title_fragment_graph));
+        adapter.addFragment(new FragmentMap(), getString(R.string.title_fragment_map));
+        adapter.addFragment(new FragmentGallery(), getString(R.string.title_fragment_image));
+        adapter.addFragment(new FragmentGaleryList(), getString(R.string.title_fragment_gallery));
         viewPager.setAdapter(adapter);
 
-        //Creación del EventBus
-        EventBus myEventBus = EventBus.getDefault();
+
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -81,10 +80,18 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-        //startService(new Intent(this, MainService.class));
+        startService(new Intent(this, MainService.class));
         //Start the service
-        bindService(new Intent(this, MainService.class), mServiceConnection,
-                Context.BIND_AUTO_CREATE);
+      /*  bindService(new Intent(this, MainService.class), mServiceConnection,
+                Context.BIND_AUTO_CREATE);*/
+
+        //Set the time of session start
+        Session.getInstance().setSessionStart(new Date());
+
+        //Start the chronometrer
+        chronometerSession = (Chronometer) findViewById(R.id.chronometerSession);
+        chronometerSession.setBase(SystemClock.elapsedRealtime());
+        chronometerSession.start();
 
     }
 
@@ -117,6 +124,25 @@ public class StartActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    public void stopSession(View view) {
+        long elapsedMillis = 0;
+        //TODO detener el servicio
+        stopService(new Intent(this, MainService.class));
+
+        //TODO detener timestamp y setearlo en la Session
+        Session.getInstance().setSessionEnd(new Date());
+        elapsedMillis = SystemClock.elapsedRealtime() - chronometerSession.getBase();
+        chronometerSession.stop();
+        Session.getInstance().setTimeElapsedSession(elapsedMillis);
+
+        //TODO volcar la sessión al disco
+        //TODO programar un trabajo subir Session al servidor (jobs)
+
+        //Change activity
+        Intent intent = new Intent(this, SummaryActivity.class);
+        startActivity(intent);
     }
 
 }

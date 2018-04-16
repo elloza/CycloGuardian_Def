@@ -11,7 +11,9 @@ public class OutcomingCameraMessageRequest extends OutcomingCameraMessage {
         this.token = 0;
     }
 
-    public String componerMensajeRequest() {
+
+    @Override
+    public String componerMensajePhoto() {
         String cadena = "{\"msg_id\":" + msg_id + ",\"token\":" + token + "}";
         return cadena;
     }
