@@ -35,6 +35,16 @@ public class StartActivity extends AppCompatActivity {
     Chronometer chronometerSession;
     MyApplication myApplication;
 
+    public StartActivity getStartActivity() {
+        return startActivity;
+    }
+
+    public void setStartActivity(StartActivity startActivity) {
+        this.startActivity = startActivity;
+    }
+
+    StartActivity startActivity;
+
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -61,7 +71,7 @@ public class StartActivity extends AppCompatActivity {
         adapter.addFragment(new FragmentGallery(), getString(R.string.title_fragment_image));
         adapter.addFragment(new FragmentGaleryList(), getString(R.string.title_fragment_gallery));
         viewPager.setAdapter(adapter);
-
+        setStartActivity(this);
         myApplication = ((MyApplication)this.getApplication());
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

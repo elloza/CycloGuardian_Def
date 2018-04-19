@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
@@ -64,8 +65,8 @@ public class FragmentGallery extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this); //Registro al bus de evnetos
         myApplication = ((MyApplication)getActivity().getApplication());
+        EventBus.getDefault().register(this); //Registro al bus de evnetos
     }
 
     @Override
@@ -81,63 +82,27 @@ public class FragmentGallery extends Fragment {
         return mView;
     }
 
-    // This method will be called when a HelloWorldEvent is posted
-    public void onEvent(ThersholdEvent event) {
-        Log.i("GALL", myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getImage().getNamePhoto());
-        extractBitmap(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getImage());
+    //Capture of event
+    public void onEvent(ThersholdEvent thersholdEvent) {
+        Toast.makeText(getActivity(), myApplication.mySession.getIncidenceArryList().get(thersholdEvent.getPosIncidence()).getImage().getNamePhoto(), Toast.LENGTH_SHORT).show();;
+        showImage(myApplication.mySession.getIncidenceArryList().get(thersholdEvent.getPosIncidence()).getImage(), thersholdEvent.getPosIncidence());
     }
 
 
-    private void extractBitmap(final Photo photo) {
-        Glide.with(imageView.getContext())
-                .load(photo.getUrl())
-                .into(imageView);
-        Glide
-                .with(this)
-                .load(photo.getUrl())
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>(300,300) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        String ruta = saveToInternalStorage(resource, photo.getNamePhoto());
-                        photo.setRutaInterna(ruta);
-                    }
-                });
-    }
-
-    private String saveToInternalStorage(Bitmap bitmap, String name){
-        //imageView.setImageBitmap(bitmap);
-        String root = Environment.getExternalStorageDirectory().toString();
+    private void showImage(final Photo photo, int index) {
+        /*String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/CycloGuardian");
 
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        Uri file = Uri.fromFile(new File(myDir, myApplication.mySession.getIncidenceArryList().get(index).getImage().getNamePhoto()));
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    (Activity) getContext(),
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
+        if(file.toString() != null && file.toString().length()>0) { }*/
+            Glide.with(imageView.getContext())
+                    .load(photo.getUrl())
+                    .into(imageView);
 
-        myDir.mkdirs();
 
-        File file = new File (myDir, name);
-        if (file.exists ()) file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return file.getAbsolutePath();
     }
+
 
 
 }

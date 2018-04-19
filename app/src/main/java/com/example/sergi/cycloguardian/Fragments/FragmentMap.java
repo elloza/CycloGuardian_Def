@@ -1,12 +1,11 @@
 package com.example.sergi.cycloguardian.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,13 +35,14 @@ import de.greenrobot.event.EventBus;
 
 public class FragmentMap extends Fragment implements OnMapReadyCallback{
 
-    GoogleMap mGoogleMap;
+    GoogleMap mGoogleMap = null;
     MarkerOptions options;
     MapView mMapView;
     SupportMapFragment mapFragment;
     View mView;
     ArrayList<LatLng> myLocations = null;
     MyApplication myApplication;
+    int posIncidence;
 
     public FragmentMap() {
         // Required empty public constructor
@@ -83,11 +83,15 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
         // Implementation when somo event was recive
         myLocations.add(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getPosicion());
         Log.i("MAP", String.valueOf(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getPosicion()));
+        posIncidence = event.getPosIncidence();
         addMarkerToMap();
     }
 
-   public void onEvent(LocationEvent locationEvent) {
-       addMarkerToMap();
+
+   public void setupMapIfNeeded(GoogleMap googleMap) {
+       if (mGoogleMap == null) {
+          mGoogleMap = googleMap;
+       }
    }
 
 
@@ -96,13 +100,13 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
         options = new MarkerOptions();
 
 
-        mGoogleMap = googleMap;
+        setupMapIfNeeded(googleMap);
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
 
         CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.968725, -5.663223))
                     .zoom(8).bearing(0).tilt(45).build();
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
 
     }
@@ -113,22 +117,21 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
         float maxX = 360.0f;
         float finalX;
         Random rand = new Random();
-        LatLng point = new LatLng((rand.nextDouble() * -180.0) + 90.0, (rand.nextDouble() * -360.0) + 180.0);
-        double latitude = point.latitude;
-        double longitude = point.longitude;
         finalX = rand.nextFloat() * (maxX - minX) + minX;
-        Log.i("MAP", String.valueOf(point.latitude) + " " + String.valueOf(point.longitude) + " " + String.valueOf(finalX));
+
+
+
 
         mGoogleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(latitude, longitude))
+                .position(myApplication.mySession.getIncidenceArryList().get(posIncidence).getPosicion())
                 .anchor(0.5f, 0.5f)
                 .title("PRUEBA")
                 .icon(BitmapDescriptorFactory.defaultMarker(finalX)));
 
-        CameraPosition cameraPosition = CameraPosition.builder().target(point)
+        CameraPosition cameraPosition = CameraPosition.builder().target(myApplication.mySession.getIncidenceArryList().get(posIncidence).getPosicion())
                 .zoom(16).bearing(0).tilt(45).build();
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        
+
     }
 
 

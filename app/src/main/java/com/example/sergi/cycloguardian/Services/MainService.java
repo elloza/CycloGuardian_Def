@@ -1,5 +1,7 @@
 package com.example.sergi.cycloguardian.Services;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -8,19 +10,26 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.example.sergi.cycloguardian.Activities.StartActivity;
 import com.example.sergi.cycloguardian.Events.LocationEvent;
 import com.example.sergi.cycloguardian.Events.SensorEvent;
 import com.example.sergi.cycloguardian.Events.ThersholdEvent;
@@ -45,10 +54,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -63,11 +75,20 @@ import java.util.Random;
 
 import de.greenrobot.event.EventBus;
 
+import static java.security.AccessController.getContext;
+
 /**
  * Created by sergi on 25/03/2018.
  */
 
 public class MainService extends Service {
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     private static final String PACKAGE_NAME =
             "com.example.sergi.cycloguardian.Services";
 
@@ -140,6 +161,16 @@ public class MainService extends Service {
     //Object myAplication
     MyApplication myApplication;
 
+    public MainService getMainService() {
+        return mainService;
+    }
+
+    public void setMainService(MainService mainService) {
+        this.mainService = mainService;
+    }
+
+    MainService mainService;
+
 
     public MainService() {
     }
@@ -158,11 +189,11 @@ public class MainService extends Service {
             }
         };
 
+        setMainService(this);
         createLocationRequest();
         getLastLocation();
-        //randomDistanceGenerator();
+        randomDistanceGenerator();
         //hacerFoto();
-        ramdomLocationGenerator();
 
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
@@ -358,32 +389,6 @@ public class MainService extends Service {
         if (serviceIsRunningInForeground(this)) {
             mNotificationManager.notify(NOTIFICATION_ID, getNotification());
         }
-    }
-
-    public void ramdomLocationGenerator() {
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 20; i++) {
-                    //Notificación de un nuevo evento de datos
-                    LocationEvent locationEvent = new LocationEvent();
-                    locationEvent.setIndex(i);
-                    EventBus.getDefault().post(locationEvent);
-
-                    //check the date
-                    try {
-                        Thread.sleep(4000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }
-        }).start();*/
-
-        LocationEvent locationEvent = new LocationEvent();
-        EventBus.getDefault().post(locationEvent);
     }
 
     public void randomDistanceGenerator() {
@@ -625,7 +630,7 @@ public class MainService extends Service {
         }
 
         @Override
-        protected void onPostExecute(Photo photo) {
+        protected void onPostExecute(final Photo photo) {
             int indexIncidence = 0;
             if (photo != null) {
                 if (photo.getUrl() != null) {
@@ -656,6 +661,22 @@ public class MainService extends Service {
                         }
                     }
 
+                    Glide
+                            .with(getMainService())
+                            .load(photo.getUrl())
+                            .asBitmap()
+                            .into(new SimpleTarget<Bitmap>(300,300) {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                    String ruta = saveToInternalStorage(resource, photo.getNamePhoto());
+                                    Log.i("SAve", ruta);
+                                    photo.setRutaInterna(ruta);
+                                }
+                            });
+
+
+                    Log.i("SERV", String.valueOf(indexIncidence) + "_" + myApplication.mySession.getIncidenceArryList().get(indexIncidence).getImage().getNamePhoto());
+
                     //Create the event and post to the eventbus
                     thersholdEvent = new ThersholdEvent();
                     thersholdEvent.setPosIncidence(indexIncidence);
@@ -669,6 +690,42 @@ public class MainService extends Service {
                 Log.i("AsyncTask", "onPostExecute: Something ocurred.");
                 //textStatus.setText("No se ha podido realizar la foto");
             }
+        }
+
+        private String saveToInternalStorage(Bitmap bitmap, String name){
+            //imageView.setImageBitmap(bitmap);
+            String root = Environment.getExternalStorageDirectory().toString();
+            File myDir = new File(root + "/CycloGuardian");
+            Log.i("SAve", String.valueOf(myDir));
+
+            // Check if we have write permission
+            int permission = ActivityCompat.checkSelfPermission(getMainService(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // We don't have permission so prompt the user
+                StartActivity startActivity = null;
+                ActivityCompat.requestPermissions(
+                        startActivity.getStartActivity(),
+                        PERMISSIONS_STORAGE,
+                        REQUEST_EXTERNAL_STORAGE
+                );
+            }
+
+            myDir.mkdirs();
+
+            File file = new File (myDir, name);
+            if (file.exists ()) file.delete ();
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.flush();
+                out.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return file.getAbsolutePath();
         }
 
 
