@@ -1,13 +1,17 @@
 package com.example.sergi.cycloguardian.Adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.sergi.cycloguardian.Files.Photo;
 import com.example.sergi.cycloguardian.Models.Incidence;
 import com.example.sergi.cycloguardian.R;
@@ -18,20 +22,15 @@ import java.util.List;
  * Created by sergi on 14/04/2018.
  */
 
-public class IncidenceAdapter extends RecyclerView.Adapter<IncidenceAdapter.MyViewHolder> {
+public class IncidenceAdapter extends BaseAdapter{
 
     public List<Incidence> incidenceList;
-    private int layout;
-    private Activity activity;
-    private OnItemClickListener listener;
+    private Context context;
 
     //Constructor de la clase
-    public IncidenceAdapter(Incidence incidence, OnItemClickListener listener, int layout, Activity activity) {
-        this.layout = layout;
-        this.activity = activity;
-        this.incidenceList.add(incidence);
-        this.listener = listener;
-
+    public IncidenceAdapter(List<Incidence> incidenceList, Context context) {
+        this.context = context;
+        this.incidenceList = incidenceList;
     }
 
     //Constructor sin argumentos
@@ -39,59 +38,30 @@ public class IncidenceAdapter extends RecyclerView.Adapter<IncidenceAdapter.MyVi
 
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(Incidence item);
-    }
 
-
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView title, ubi, fecha;
-        ImageView imageView;
-
-        public MyViewHolder(View view) {
-            super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            ubi = (TextView) view.findViewById(R.id.ubicacionPhoto);
-            fecha = (TextView) view.findViewById(R.id.fecha);
-            imageView = (ImageView) view.findViewById(R.id.imagePhoto);
-            view.setOnClickListener((View.OnClickListener) this);
-
-        }
-
-        public void bind(final Incidence item, final OnItemClickListener listener) {
-            title.setText(item.getImage().getNamePhoto());
-            ubi.setText(item.getIncidenceDirection());
-            fecha.setText((CharSequence) item.getTimeIncidence());
-            //Picasso.with(itemView.getContext()).load(item.imageUrl).into(image);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    listener.onItemClick(item);
-                }
-            });
-        }
-    }
-
-    public void updateData(List<Incidence> dataset) {
-        incidenceList.clear();
-        incidenceList.addAll(dataset);
-        notifyDataSetChanged();
+    @Override
+    public int getCount() {
+        return incidenceList.size();
     }
 
     @Override
-    public IncidenceAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.photo_list_row, parent, false);
-
-        return new MyViewHolder(itemView);
+    public Object getItem(int i) {
+        return null;
     }
 
     @Override
-    public void onBindViewHolder(IncidenceAdapter.MyViewHolder holder, int position) {
-        holder.bind(incidenceList.get(position), listener);
-    }
-
-    @Override
-    public int getItemCount() {
+    public long getItemId(int i) {
         return 0;
+    }
+
+    // returns an ImageView view
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        // create a ImageView programmatically
+        ImageView imageView = new ImageView(context);
+        //imageView.setImageResource(incidenceList.get(position).getImage().getNamePhoto()); // set image in ImageView
+        Glide.with(context).load(incidenceList.get(position).getImage().getUrl()).into(imageView);
+        imageView.setLayoutParams(new Gallery.LayoutParams(200, 200)); // set ImageView param
+        return imageView;
     }
 }
