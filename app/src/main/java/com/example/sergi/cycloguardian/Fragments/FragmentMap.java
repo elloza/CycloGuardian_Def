@@ -97,6 +97,11 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        float minX = 0.0f;  //Para calcular aleatoriamente el color del marcador
+        float maxX = 360.0f;
+        float finalX;
+        Random rand = new Random();
+        finalX = rand.nextFloat() * (maxX - minX) + minX;
         options = new MarkerOptions();
 
 
@@ -107,6 +112,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
         CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.968725, -5.663223))
                     .zoom(8).bearing(0).tilt(45).build();
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        addMarkerToMap();
 
 
     }
@@ -119,18 +126,21 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
         Random rand = new Random();
         finalX = rand.nextFloat() * (maxX - minX) + minX;
 
+        if (myApplication.mySession.getIncidenceArryList().size() != 0) {
+            for (int i = 0; i < myApplication.mySession.getIncidenceArryList().size(); i++) {
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(myApplication.mySession.getIncidenceArryList().get(i).getPosicion())
+                        .anchor(0.5f, 0.5f)
+                        .title(myApplication.mySession.getIncidenceArryList().get(i).getImage().getNamePhoto())
+                        .icon(BitmapDescriptorFactory.defaultMarker(finalX)));
 
+                CameraPosition cameraPosition = CameraPosition.builder().target(myApplication.mySession.getIncidenceArryList().get(i).getPosicion())
+                        .zoom(16).bearing(0).tilt(45).build();
+                mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+            }
+        }
 
-        mGoogleMap.addMarker(new MarkerOptions()
-                .position(myApplication.mySession.getIncidenceArryList().get(posIncidence).getPosicion())
-                .anchor(0.5f, 0.5f)
-                .title("PRUEBA")
-                .icon(BitmapDescriptorFactory.defaultMarker(finalX)));
-
-        CameraPosition cameraPosition = CameraPosition.builder().target(myApplication.mySession.getIncidenceArryList().get(posIncidence).getPosicion())
-                .zoom(16).bearing(0).tilt(45).build();
-        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
     }
 

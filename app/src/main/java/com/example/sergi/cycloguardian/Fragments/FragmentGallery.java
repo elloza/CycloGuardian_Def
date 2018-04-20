@@ -33,6 +33,7 @@ import com.example.sergi.cycloguardian.Models.Session;
 import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 import com.google.android.gms.maps.MapView;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,6 +51,8 @@ public class FragmentGallery extends Fragment {
 
     //Object myAplication
     MyApplication myApplication;
+
+    int lastImage = -1;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -79,23 +82,32 @@ public class FragmentGallery extends Fragment {
         textViewLoc = (TextView) mView.findViewById(R.id.textViewLocalizacion);
         constraintLayout = (ConstraintLayout) mView.findViewById(R.id.relativeGallery);
 
+        if (lastImage != -1) {
+            Glide.with(this)
+                    .load(myApplication.mySession.getIncidenceArryList().get(lastImage).getImage().getUrl())
+                    .into(imageView);
+        }
+
         return mView;
     }
 
     //Capture of event
     public void onEvent(ThersholdEvent thersholdEvent) {
-        Toast.makeText(getActivity(), myApplication.mySession.getIncidenceArryList().get(thersholdEvent.getPosIncidence()).getImage().getNamePhoto(), Toast.LENGTH_SHORT).show();;
+        //Toast.makeText(getActivity(), myApplication.mySession.getIncidenceArryList().get(thersholdEvent.getPosIncidence()).getImage().getNamePhoto(), Toast.LENGTH_SHORT).show();;
+        lastImage = thersholdEvent.getPosIncidence();
         showImage(myApplication.mySession.getIncidenceArryList().get(thersholdEvent.getPosIncidence()).getImage(), thersholdEvent.getPosIncidence());
     }
 
 
     private void showImage(final Photo photo, int index) {
+
         /*String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/CycloGuardian");
+        File file = new File (myDir, myApplication.mySession.getIncidenceArryList().get(index).getImage().getNamePhoto());
 
-        Uri file = Uri.fromFile(new File(myDir, myApplication.mySession.getIncidenceArryList().get(index).getImage().getNamePhoto()));
+        Picasso.with(getActivity()).load(file).into(imageView);*/
 
-        if(file.toString() != null && file.toString().length()>0) { }*/
+
             Glide.with(imageView.getContext())
                     .load(photo.getUrl())
                     .into(imageView);

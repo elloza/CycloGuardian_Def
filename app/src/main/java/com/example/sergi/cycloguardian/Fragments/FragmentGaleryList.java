@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.sergi.cycloguardian.Adapter.IncidenceAdapter;
@@ -18,6 +19,7 @@ import com.example.sergi.cycloguardian.Models.Session;
 import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -31,6 +33,7 @@ public class FragmentGaleryList extends Fragment {
     Gallery simpleGallery;
     IncidenceAdapter incidenceAdapter;
     ImageView selectedImageView;
+    TextView textViewName, textViewDate, textViewDir;
 
     public FragmentGaleryList() {
         // Required empty public constructor
@@ -51,11 +54,15 @@ public class FragmentGaleryList extends Fragment {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_fragment_galery_list, container, false);
         incidenceList = myApplication.mySession.getIncidenceArryList();
-       /* recyclerView = (RecyclerView) mView.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
 
-        IncidenceAdapter incidenceAdapter = new IncidenceAdapter(incidenceList, R.layout.photo_list_row, getActivity());
-        recyclerView.setAdapter(incidenceAdapter);*/
+        //TextView
+        textViewDate = (TextView) mView.findViewById(R.id.textViewDate);
+        textViewDir = (TextView) mView.findViewById(R.id.textViewDir);
+        textViewName = (TextView) mView.findViewById(R.id.textViewName);
+
+        //Pattern from the date
+        String pattern = "d MMM yyyy  HH:mm:ss";
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         //Gallery
         simpleGallery = (Gallery) mView.findViewById(R.id.simpleGallery); // get the reference of Gallery
@@ -71,6 +78,11 @@ public class FragmentGaleryList extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // set the selected image in the ImageView
                 Glide.with(getContext()).load(incidenceList.get(position).getImage().getUrl()).into(selectedImageView);
+                textViewDir.setText(String.valueOf(incidenceList.get(position).getPosicion()));
+                textViewName.setText(incidenceList.get(position).getImage().getNamePhoto());
+                textViewDate.setText(simpleDateFormat.format(incidenceList.get(position).getTimeIncidence()));
+                //
+
             }
         });
 
@@ -83,6 +95,8 @@ public class FragmentGaleryList extends Fragment {
     public void onEvent(final ThersholdEvent event) {
         //Toast.makeText(getActivity(), "HOLA", Toast.LENGTH_SHORT).show();
       incidenceList = myApplication.mySession.getIncidenceArryList();
+      incidenceAdapter = new IncidenceAdapter(incidenceList, this.getContext());
+      simpleGallery.setAdapter(incidenceAdapter);
       //IncidenceAdapter incidenceAdapter = new IncidenceAdapter(incidenceList, R.layout.photo_list_row, getActivity());
       //recyclerView.setAdapter(incidenceAdapter);
     }
