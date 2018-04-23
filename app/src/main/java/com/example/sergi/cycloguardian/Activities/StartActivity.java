@@ -17,18 +17,21 @@ import android.view.View;
 import android.widget.Chronometer;
 
 import com.example.sergi.cycloguardian.Database.AppDataBase;
+import com.example.sergi.cycloguardian.Database.IncidenceDao;
+import com.example.sergi.cycloguardian.Database.PhotoDao;
 import com.example.sergi.cycloguardian.Database.SessionDao;
 import com.example.sergi.cycloguardian.Database.SessionEntity;
+import com.example.sergi.cycloguardian.Files.Photo;
 import com.example.sergi.cycloguardian.Fragments.FragmentGallery;
 import com.example.sergi.cycloguardian.Fragments.FragmentGaleryList;
 import com.example.sergi.cycloguardian.Fragments.FragmentGraph;
 import com.example.sergi.cycloguardian.Fragments.FragmentMap;
-import com.example.sergi.cycloguardian.Models.Session;
+import com.example.sergi.cycloguardian.Job.SyncJob;
+import com.example.sergi.cycloguardian.Models.Incidence;
 import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 import com.example.sergi.cycloguardian.Services.MainService;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -157,16 +160,20 @@ public class StartActivity extends AppCompatActivity {
         //Obtain the instance of the DataBase
         AppDataBase mDb = Room.inMemoryDatabaseBuilder(this, AppDataBase.class).build();
         SessionDao sessionDao = mDb.sessionDao();  //Get the DAO
+        IncidenceDao incidenceDao = mDb.incidenceDao();
+        PhotoDao photoDao = mDb.photoDao();
         SessionEntity sessionEntity = new SessionEntity();
-        sessionEntity.setIncidenceArryList(myApplication.mySession.getIncidenceArryList());
+        /*sessionEntity.setIncidenceArryList(myApplication.mySession.getIncidenceArryList());
         sessionEntity.setSessionEnd(myApplication.mySession.getSessionEnd());
         sessionEntity.setSessionStart(myApplication.mySession.getSessionStart());
-        sessionEntity.setTimeElapsedSession(myApplication.mySession.getTimeElapsedSession());
+        sessionEntity.setTimeElapsedSession(myApplication.mySession.getTimeElapsedSession());*/
         sessionDao.insertSession(sessionEntity);
 
 
 
+
         //TODO programar un trabajo subir Session al servidor (jobs)
+        SyncJob.schedulePeriodic();
 
         //Change activity
         Intent intent = new Intent(this, SummaryActivity.class);

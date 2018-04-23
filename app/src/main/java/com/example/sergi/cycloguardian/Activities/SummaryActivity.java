@@ -2,10 +2,8 @@ package com.example.sergi.cycloguardian.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
-import com.example.sergi.cycloguardian.Models.Session;
 import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 

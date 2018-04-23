@@ -1,19 +1,15 @@
 package com.example.sergi.cycloguardian.Models;
 
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-
 /**
- * Created by sergi on 13/04/2018.
+ * Created by sergi on 23/04/2018.
  */
 
-public abstract class Session {
+public class Session {
 
     ArrayList<Incidence> incidenceArryList;
     Date sessionStart;
@@ -29,13 +25,13 @@ public abstract class Session {
 
     //Singleton of the class
     private static Session instance;
-    /*public static Session getInstance() {
+    public static Session getInstance() {
         if (instance == null) {
             instance = new Session();
         }
 
         return instance;
-    }*/
+    }
 
     //Getters and setters
 

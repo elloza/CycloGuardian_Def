@@ -1,7 +1,6 @@
 package com.example.sergi.cycloguardian.Services;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -13,8 +12,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -30,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.sergi.cycloguardian.Activities.StartActivity;
-import com.example.sergi.cycloguardian.Events.LocationEvent;
 import com.example.sergi.cycloguardian.Events.SensorEvent;
 import com.example.sergi.cycloguardian.Events.ThersholdEvent;
 import com.example.sergi.cycloguardian.Files.Photo;
@@ -39,7 +35,6 @@ import com.example.sergi.cycloguardian.Messages.OutcomingCameraMessagePhoto;
 import com.example.sergi.cycloguardian.Messages.OutcomingCameraMessageRequest;
 import com.example.sergi.cycloguardian.Models.Incidence;
 import com.example.sergi.cycloguardian.MyApplication;
-import com.example.sergi.cycloguardian.Models.Session;
 import com.example.sergi.cycloguardian.Utils.Constants;
 import com.example.sergi.cycloguardian.Utils.Parser;
 import com.example.sergi.cycloguardian.Utils.Util;
@@ -69,13 +64,9 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 import de.greenrobot.event.EventBus;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by sergi on 25/03/2018.

@@ -7,9 +7,6 @@ import android.arch.persistence.room.PrimaryKey;
  * Created by sergi on 23/04/2018.
  */
 
-@Entity(tableName = "sessions")
-public class SessionEntity {
-    @PrimaryKey(autoGenerate = true)
-    int sessionId;
-
+@Entity(tableName = "incidences")
+public class IncidenceEntity {
 }

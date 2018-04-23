@@ -1,42 +1,20 @@
 package com.example.sergi.cycloguardian.Fragments;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.sergi.cycloguardian.Events.ThersholdEvent;
 import com.example.sergi.cycloguardian.Files.Photo;
-import com.example.sergi.cycloguardian.Models.Session;
 import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
-import com.google.android.gms.maps.MapView;
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.io.FileOutputStream;
 
 import de.greenrobot.event.EventBus;
 
