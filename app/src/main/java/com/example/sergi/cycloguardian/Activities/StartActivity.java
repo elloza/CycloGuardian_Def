@@ -1,5 +1,6 @@
 package com.example.sergi.cycloguardian.Activities;
 
+import android.arch.persistence.room.Room;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -15,6 +16,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Chronometer;
 
+import com.example.sergi.cycloguardian.Database.AppDataBase;
+import com.example.sergi.cycloguardian.Database.SessionDao;
+import com.example.sergi.cycloguardian.Database.SessionEntity;
 import com.example.sergi.cycloguardian.Fragments.FragmentGallery;
 import com.example.sergi.cycloguardian.Fragments.FragmentGaleryList;
 import com.example.sergi.cycloguardian.Fragments.FragmentGraph;
@@ -24,6 +28,7 @@ import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
 import com.example.sergi.cycloguardian.Services.MainService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -149,7 +154,18 @@ public class StartActivity extends AppCompatActivity {
         chronometerSession.stop();
         myApplication.mySession.setTimeElapsedSession(elapsedMillis);
 
-        //TODO volcar la sessión al disco
+        //Obtain the instance of the DataBase
+        AppDataBase mDb = Room.inMemoryDatabaseBuilder(this, AppDataBase.class).build();
+        SessionDao sessionDao = mDb.sessionDao();  //Get the DAO
+        SessionEntity sessionEntity = new SessionEntity();
+        sessionEntity.setIncidenceArryList(myApplication.mySession.getIncidenceArryList());
+        sessionEntity.setSessionEnd(myApplication.mySession.getSessionEnd());
+        sessionEntity.setSessionStart(myApplication.mySession.getSessionStart());
+        sessionEntity.setTimeElapsedSession(myApplication.mySession.getTimeElapsedSession());
+        sessionDao.insertSession(sessionEntity);
+
+
+
         //TODO programar un trabajo subir Session al servidor (jobs)
 
         //Change activity

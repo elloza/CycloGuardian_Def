@@ -1,6 +1,5 @@
 package com.example.sergi.cycloguardian.Models;
 
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +13,8 @@ import java.util.Queue;
  * Created by sergi on 13/04/2018.
  */
 
-public class Session {
+public abstract class Session {
+
     ArrayList<Incidence> incidenceArryList;
     Date sessionStart;
     Date sessionEnd;
@@ -29,15 +29,16 @@ public class Session {
 
     //Singleton of the class
     private static Session instance;
-    public static Session getInstance() {
+    /*public static Session getInstance() {
         if (instance == null) {
             instance = new Session();
         }
 
         return instance;
-    }
+    }*/
 
     //Getters and setters
+
     public ArrayList<Incidence> getIncidenceArryList() {
         return incidenceArryList;
     }
