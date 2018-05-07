@@ -9,4 +9,6 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "incidences")
 public class IncidenceEntity {
+    @PrimaryKey(autoGenerate = true)
+    int incidenceId;
 }

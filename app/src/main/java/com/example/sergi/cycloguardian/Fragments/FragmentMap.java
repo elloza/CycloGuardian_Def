@@ -54,7 +54,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this); //Registro al bus de evnetos
         myApplication = ((MyApplication)getActivity().getApplication());
-        myLocations = new ArrayList<LatLng>();
     }
 
     @Override
@@ -81,10 +80,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
     // This method will be called when a ThersholEvent is posted
     public void onEvent(ThersholdEvent event){
         // Implementation when somo event was recive
-        myLocations.add(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getPosicion());
         Log.i("MAP", String.valueOf(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getPosicion()));
         posIncidence = event.getPosIncidence();
-        addMarkerToMap();
+        addMarkerToMap(myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getPosicion(),
+                myApplication.mySession.getIncidenceArryList().get(event.getPosIncidence()).getImage().getNamePhoto());
     }
 
 
@@ -108,25 +107,12 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
         setupMapIfNeeded(googleMap);
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-
-        CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.968725, -5.663223))
+        if (myApplication.mySession.getIncidenceArryList().isEmpty()) {
+            CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(40.968725, -5.663223))
                     .zoom(8).bearing(0).tilt(45).build();
-        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        addMarkerToMap();
-
-
-    }
-
-    public void addMarkerToMap() {
-
-        float minX = 0.0f;  //Para calcular aleatoriamente el color del marcador
-        float maxX = 360.0f;
-        float finalX;
-        Random rand = new Random();
-        finalX = rand.nextFloat() * (maxX - minX) + minX;
-
-        if (myApplication.mySession.getIncidenceArryList().size() != 0) {
+        } else {
             for (int i = 0; i < myApplication.mySession.getIncidenceArryList().size(); i++) {
                 mGoogleMap.addMarker(new MarkerOptions()
                         .position(myApplication.mySession.getIncidenceArryList().get(i).getPosicion())
@@ -140,6 +126,30 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback{
 
             }
         }
+
+
+
+
+
+    }
+
+    public void addMarkerToMap(LatLng positionIncidence, String namePhoto) {
+
+        float minX = 0.0f;  //Para calcular aleatoriamente el color del marcador
+        float maxX = 360.0f;
+        float finalX;
+        Random rand = new Random();
+        finalX = rand.nextFloat() * (maxX - minX) + minX;
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(positionIncidence)
+                .anchor(0.5f, 0.5f)
+                .title(namePhoto)
+                .icon(BitmapDescriptorFactory.defaultMarker(finalX)));
+
+        CameraPosition cameraPosition = CameraPosition.builder().target(positionIncidence)
+                .zoom(16).bearing(0).tilt(45).build();
+        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
 
     }

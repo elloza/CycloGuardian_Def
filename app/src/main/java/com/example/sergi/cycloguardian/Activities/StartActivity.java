@@ -167,7 +167,7 @@ public class StartActivity extends AppCompatActivity {
         sessionEntity.setSessionEnd(myApplication.mySession.getSessionEnd());
         sessionEntity.setSessionStart(myApplication.mySession.getSessionStart());
         sessionEntity.setTimeElapsedSession(myApplication.mySession.getTimeElapsedSession());*/
-        sessionDao.insertSession(sessionEntity);
+        //sessionDao.insertSession(sessionEntity);
 
 
 

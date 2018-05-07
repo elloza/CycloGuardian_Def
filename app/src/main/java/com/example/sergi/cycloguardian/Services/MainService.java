@@ -637,10 +637,24 @@ public class MainService extends Service {
                         incidence.setPosicion(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()));
                     }
 
+
+                    Glide
+                            .with(getMainService())
+                            .load(photo.getUrl())
+                            .asBitmap()
+                            .into(new SimpleTarget<Bitmap>(300,300) {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                    String ruta = saveToInternalStorage(resource, photo.getNamePhoto());
+                                    Log.i("SAve", ruta);
+                                    //photo.setRutaInterna(ruta);
+                                }
+                            });
+
                     //Add the photo to the indidence and the date
+                    //Log.i("SERV", photo.getRutaInterna());
                     incidence.setImage(photo);
                     incidence.setTimeIncidence(new Date());
-
 
                     //TODO añadir incicencia a la session
                     myApplication.mySession.getIncidenceArryList().add(incidence);
@@ -652,18 +666,6 @@ public class MainService extends Service {
                         }
                     }
 
-                    Glide
-                            .with(getMainService())
-                            .load(photo.getUrl())
-                            .asBitmap()
-                            .into(new SimpleTarget<Bitmap>(300,300) {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                                    String ruta = saveToInternalStorage(resource, photo.getNamePhoto());
-                                    Log.i("SAve", ruta);
-                                    photo.setRutaInterna(ruta);
-                                }
-                            });
 
 
                     Log.i("SERV", String.valueOf(indexIncidence) + "_" + myApplication.mySession.getIncidenceArryList().get(indexIncidence).getImage().getNamePhoto());

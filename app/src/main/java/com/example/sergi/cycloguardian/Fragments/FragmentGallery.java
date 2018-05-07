@@ -1,6 +1,7 @@
 package com.example.sergi.cycloguardian.Fragments;
 
 import android.Manifest;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.example.sergi.cycloguardian.Events.ThersholdEvent;
 import com.example.sergi.cycloguardian.Files.Photo;
 import com.example.sergi.cycloguardian.MyApplication;
 import com.example.sergi.cycloguardian.R;
+import com.squareup.picasso.Picasso;
 
 import de.greenrobot.event.EventBus;
 
@@ -65,6 +67,7 @@ public class FragmentGallery extends Fragment {
                     .load(myApplication.mySession.getIncidenceArryList().get(lastImage).getImage().getUrl())
                     .into(imageView);
         }
+        
 
         return mView;
     }
@@ -79,11 +82,12 @@ public class FragmentGallery extends Fragment {
 
     private void showImage(final Photo photo, int index) {
 
-        /*String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/CycloGuardian");
-        File file = new File (myDir, myApplication.mySession.getIncidenceArryList().get(index).getImage().getNamePhoto());
 
-        Picasso.with(getActivity()).load(file).into(imageView);*/
+
+
+        /*Uri pathUri = Uri.parse("/storage/emulated/0/CycloGuardian/SJCM0383.jpg");
+        Picasso.with(imageView.getContext()).load(pathUri).noPlaceholder()
+                .centerCrop().fit().into(imageView);*/
 
 
             Glide.with(imageView.getContext())
