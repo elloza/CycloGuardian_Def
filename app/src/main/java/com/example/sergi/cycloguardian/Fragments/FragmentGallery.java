@@ -67,7 +67,7 @@ public class FragmentGallery extends Fragment {
                     .load(myApplication.mySession.getIncidenceArryList().get(lastImage).getImage().getUrl())
                     .into(imageView);
         }
-        
+
 
         return mView;
     }

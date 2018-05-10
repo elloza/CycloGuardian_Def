@@ -704,7 +704,8 @@ public class MainService extends Service {
                 );
             }
 
-            myDir.mkdirs();
+            if(!myDir.exists())
+                myDir.mkdirs();
 
             File file = new File (myDir, name);
             if (file.exists ()) file.delete ();
