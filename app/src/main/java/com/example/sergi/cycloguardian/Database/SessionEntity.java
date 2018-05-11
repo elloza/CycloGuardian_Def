@@ -3,7 +3,8 @@ package com.example.sergi.cycloguardian.Database;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.sql.Date;
+import java.util.Date;
+
 
 /**
  * Created by sergi on 23/04/2018.
@@ -15,8 +16,8 @@ public class SessionEntity {
     int sessionId;
     int userId;
     int uuid;
-    Date sessionStart;
-    Date sessionEnd;
+    /*Date sessionStart;
+    Date sessionEnd;*/
     long timeElapssed;
     Boolean syncronized;
 
@@ -52,7 +53,7 @@ public class SessionEntity {
         this.uuid = uuid;
     }
 
-    public Date getSessionStart() {
+    /*public Date getSessionStart() {
         return sessionStart;
     }
 
@@ -66,7 +67,7 @@ public class SessionEntity {
 
     public void setSessionEnd(Date sessionEnd) {
         this.sessionEnd = sessionEnd;
-    }
+    }*/
 
     public long getTimeElapssed() {
         return timeElapssed;

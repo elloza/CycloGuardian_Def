@@ -18,7 +18,7 @@ public class IncidenceEntity {
     int idUser;
     double latitude;
     double longitude;
-    Date timeIncidence;
+   // Date timeIncidence;
     int uuid;
     long distanceSensor;
     Boolean syncronized;
@@ -71,13 +71,13 @@ public class IncidenceEntity {
         this.longitude = longitude;
     }
 
-    public Date getTimeIncidence() {
+   /* public Date getTimeIncidence() {
         return timeIncidence;
     }
 
     public void setTimeIncidence(Date timeIncidence) {
         this.timeIncidence = timeIncidence;
-    }
+    }*/
 
     public int getUuid() {
         return uuid;

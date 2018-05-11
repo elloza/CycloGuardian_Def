@@ -58,5 +58,10 @@
     <string name="wifi_camera_disconnect">Camera wifi disconnected. Firts you have to enable the camera wifi</string>
     <string name="wifi_disabled">Red wifi desconectada. Firts you have to enable wifi</string>
     <string name="thershold_line">1.5 m</string>
+    <string name="configure_camera">Please configure the Camera</string>
+    <string name="configure_wifi">Please configure the WiFi</string>
+    <string name="configure_GPS">Please configure the GPS</string>
+    <string name="configure_BLE">Please configure the Bluetooth</string>
+    <string name="configure_device">Please configure the device</string>
 
 </resources>

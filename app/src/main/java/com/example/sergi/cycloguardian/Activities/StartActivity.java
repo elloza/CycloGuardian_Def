@@ -158,12 +158,12 @@ public class StartActivity extends AppCompatActivity {
         myApplication.mySession.setTimeElapsedSession(elapsedMillis);
 
         //Obtain the instance of the DataBase
-        AppDataBase mDb = Room.inMemoryDatabaseBuilder(this, AppDataBase.class).build();
+        /*AppDataBase mDb = Room.inMemoryDatabaseBuilder(this, AppDataBase.class).build();
         SessionDao sessionDao = mDb.sessionDao();  //Get the DAO
         IncidenceDao incidenceDao = mDb.incidenceDao();
         PhotoDao photoDao = mDb.photoDao();
         SessionEntity sessionEntity = new SessionEntity();
-        /*sessionEntity.setIncidenceArryList(myApplication.mySession.getIncidenceArryList());
+        sessionEntity.setIncidenceArryList(myApplication.mySession.getIncidenceArryList());
         sessionEntity.setSessionEnd(myApplication.mySession.getSessionEnd());
         sessionEntity.setSessionStart(myApplication.mySession.getSessionStart());
         sessionEntity.setTimeElapsedSession(myApplication.mySession.getTimeElapsedSession());*/

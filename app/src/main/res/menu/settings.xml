@@ -23,7 +23,7 @@
 
     <item
         android:id="@+id/linHardware"
-        android:title="Link Arduino">
+        android:title="Link Device">
     </item>
 
 </menu>
